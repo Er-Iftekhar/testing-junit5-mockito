@@ -11,17 +11,17 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SpecialitySDJpaServiceTest {
 
     // Method 1
     @Mock
-    SpecialtyRepository specialtyRepository = mock(SpecialtyRepository.class);
+    SpecialtyRepository specialtyRepository;
 
     @InjectMocks
-    SpecialitySDJpaService service = mock(SpecialitySDJpaService.class);
+    SpecialitySDJpaService service;
 
     //Method 2 (using @BeforeEach)
 //    @BeforeEach
@@ -35,8 +35,32 @@ class SpecialitySDJpaServiceTest {
 //    SpecialitySDJpaService service = mock(SpecialitySDJpaService.class);
 
     @Test
-    void testDeleteById() {
+    void testDeleteByIdAtLeastOnce() {
         service.deleteById(1L);
+        service.deleteById(1L);
+        verify(specialtyRepository, atLeastOnce()).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteByIdTimes() {
+        service.deleteById(1L);
+        service.deleteById(1L);
+        verify(specialtyRepository, times(2)).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteByIdAtMost() {
+        service.deleteById(1L);
+        service.deleteById(1L);
+        verify(specialtyRepository, atMost(5)).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteByIdNever() {
+        service.deleteById(1L);
+        service.deleteById(1L);
+        verify(specialtyRepository, atMost(5)).deleteById(1L);
+        verify(specialtyRepository, never()).deleteById(5L);
     }
 
     @Test

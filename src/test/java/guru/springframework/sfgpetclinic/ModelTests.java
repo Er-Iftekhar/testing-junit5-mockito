@@ -8,7 +8,8 @@ import org.junit.jupiter.api.TestInfo;
  * Created by jt on 2018-10-28.
  */
 @Tag("model")
-public interface ModelTests {
+public interface
+ModelTests {
 
     @BeforeEach
     default void beforeEachConsoleOutputer(TestInfo testInfo){

@@ -16,7 +16,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.never;
@@ -28,6 +28,9 @@ class OwnerControllerTest {
     private static final String OWNERS_CREATE_OR_UPDATE_OWNER_FORM = "owners/createOrUpdateOwnerForm";
     @Mock
     OwnerService service;
+
+    @Mock
+    Model model;
 
     @Mock
     BindingResult bindingResult;
@@ -73,11 +76,14 @@ class OwnerControllerTest {
     void testProcessFindFormWithAnnotation(){
         //given
         Owner owner = new Owner(1L, "firstName", "foundMultiple");
+        InOrder inOrder  = Mockito.inOrder(service, model);
         //when
-        String viewName = controller.processFindForm(owner, bindingResult, Mockito.mock(Model.class));
+        String viewName = controller.processFindForm(owner, bindingResult, model);
         //then
         assertThat("%foundMultiple%").isEqualTo(stringArgumentCaptor.getValue());
         assertThat(viewName).isEqualTo("owners/ownersList");
+        inOrder.verify(service).findAllByLastNameLike(anyString());
+        inOrder.verify(model).addAttribute(anyString(), anyList());
     }
 
     @Test

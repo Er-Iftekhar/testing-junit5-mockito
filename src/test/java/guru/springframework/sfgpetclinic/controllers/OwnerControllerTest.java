@@ -19,14 +19,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OwnerControllerTest {
 
     private static final String REDIRECT_OWNERS_5 = "redirect:/owners/5";
     private static final String OWNERS_CREATE_OR_UPDATE_OWNER_FORM = "owners/createOrUpdateOwnerForm";
-    @Mock
+    @Mock(lenient = true)
     OwnerService service;
 
     @Mock
@@ -70,6 +70,7 @@ class OwnerControllerTest {
         //then
         assertThat("%lastName%").isEqualTo(stringArgumentCaptor.getValue());
         assertThat(viewName).isEqualTo("redirect:/owners/1");
+        verifyNoInteractions(model);
     }
 
     @Test
@@ -83,7 +84,8 @@ class OwnerControllerTest {
         assertThat("%foundMultiple%").isEqualTo(stringArgumentCaptor.getValue());
         assertThat(viewName).isEqualTo("owners/ownersList");
         inOrder.verify(service).findAllByLastNameLike(anyString());
-        inOrder.verify(model).addAttribute(anyString(), anyList());
+        inOrder.verify(model, times(1)).addAttribute(anyString(), anyList());
+        verifyNoMoreInteractions(model);
     }
 
     @Test
@@ -95,6 +97,7 @@ class OwnerControllerTest {
         //then
         assertThat("%notFound%").isEqualTo(stringArgumentCaptor.getValue());
         assertThat(viewName).isEqualTo("owners/findOwners");
+        verifyNoInteractions(model);
     }
 
     @Test

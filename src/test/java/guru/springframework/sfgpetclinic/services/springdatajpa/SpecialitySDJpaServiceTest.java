@@ -42,53 +42,70 @@ class SpecialitySDJpaServiceTest {
 
     @Test
     void testDeleteByObject(){
+        //given
         Speciality speciality = new Speciality();
+        //when
         service.delete(speciality);
-        verify(specialtyRepository, atLeastOnce()).delete(any(Speciality.class));
+        //then
+        then(specialtyRepository).should().delete(any(Speciality.class));
     }
 
     @Test
     void testDeleteByIdAtLeastOnce() {
+        //given - none
+        //when
         service.deleteById(1L);
         service.deleteById(1L);
-        verify(specialtyRepository, atLeastOnce()).deleteById(anyLong());
+        //then
+        then(specialtyRepository).should(atLeastOnce()).deleteById(1L);
     }
 
     @Test
     void testDeleteByIdTimes() {
+        //given - none
+        //when
         service.deleteById(1L);
         service.deleteById(1L);
-        verify(specialtyRepository, times(2)).deleteById(anyLong());
+        //then
+        then(specialtyRepository).should(times(2)).deleteById(1L);
     }
 
     @Test
     void testDeleteByIdAtMost() {
+        //given - none
+        //when
         service.deleteById(1L);
         service.deleteById(1L);
-        verify(specialtyRepository, atMost(5)).deleteById(anyLong());
+        //then
+        then(specialtyRepository).should(atMost(5)).deleteById(1L);
     }
 
     @Test
     void testDeleteByIdNever() {
+        //when
         service.deleteById(1L);
         service.deleteById(1L);
-        verify(specialtyRepository, atMost(5)).deleteById(anyLong());
-        verify(specialtyRepository, never()).deleteById(5L);
+        //then
+        then(specialtyRepository).should(never()).deleteById(5L);
+        then(specialtyRepository).should(atMost(5)).deleteById(1L);
     }
 
     @Test
     void delete(){
+        //when
         service.delete(new Speciality());
+        //then
+        then(specialtyRepository).should().delete(any(Speciality.class));
     }
-
-    @Test
-    void testFindById(){
-        Speciality speciality = new Speciality();
-        when(specialtyRepository.findById(1L)).thenReturn(Optional.of(speciality));
-        Speciality foundSpeciality = service.findById(1L);
-        assertThat(foundSpeciality).isNotNull();
-        verify(specialtyRepository).findById(1L);
-    }
+//    commented this test as it is repeated using BDD with mockito
+//    @Test
+//    void testFindById(){
+//        Speciality speciality = new Speciality();
+//        when(specialtyRepository.findById(1L)).thenReturn(Optional.of(speciality));
+//        Speciality foundSpeciality = service.findById(1L);
+//        assertThat(foundSpeciality).isNotNull();
+//        verify(specialtyRepository).findById(1L);
+//    }
 
     @Test
     void testFindByIdBdd(){
